@@ -1,0 +1,1 @@
+.list{display:flex;width:100%;flex-wrap:wrap;list-style:none;padding:0}.list>li:first-of-type{margin:5px 0}.list>li:not(:first-of-type){margin:5px}.list>li{border:1px solid #00f;line-height:25px}.list>li>a{width:100%;display:block;padding:5px}
