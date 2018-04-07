@@ -16,7 +16,7 @@ const callbackModel = () => {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', {
-		title: 'Express',
+		title: '视频资源站',
 		staticUrl: '/vs',
 	});
 });
