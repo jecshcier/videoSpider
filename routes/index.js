@@ -17,7 +17,7 @@ const callbackModel = () => {
 router.get('/', function(req, res, next) {
 	res.render('index', {
 		title: '视频资源站',
-		staticUrl: '/vs',
+		staticUrl: '/video_spider/vs',
 	});
 });
 
