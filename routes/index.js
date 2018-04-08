@@ -41,21 +41,24 @@ router.post('/searchVideo', function(req, res, next) {
 				const $ = cheerio.load(body)
 				let videoList = []
 				$(".s_dir").each(function(index, el) {
+					console.log('==================>')
 					console.log(index)
-					if(!$(el).find(".base_name").length){
+					console.log('==================>')
+
+					if (!$(el).find(".base_name").length) {
 						return true;
 					}
 					let videoData = {
 						name: $(el).find(".base_name").html().replace(/<[^>]+>/g, ""),
 						list: [],
-						thumb:$(el).find(".s_target>img").length ? $(el).find(".s_target>img").attr('src'):null
+						thumb: $(el).find(".s_target>img").length ? $(el).find(".s_target>img").attr('src') : null
 					}
 					$(el).find(".s_items").each(function(index, el) {
 						videoData.list[index] = []
 						$(el).find('ul li a').each(function(index2, el2) {
 							videoData.list[index].push({
-								num:$(el2).find('span').html(),
-								url:$(el2).attr('href')
+								num: $(el2).find('span').html(),
+								url: $(el2).attr('href')
 							})
 						});
 					});
