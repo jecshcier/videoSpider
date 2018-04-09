@@ -6,7 +6,7 @@ const cheerio = require('cheerio')
 const request = require('superagent'); // 引入SuperAgent
 require('superagent-proxy')(request);
 
-const gulpfile = require('../gulpfile')
+// const gulpfile = require('../gulpfile')
 
 const callbackModel = () => {
 	return {
