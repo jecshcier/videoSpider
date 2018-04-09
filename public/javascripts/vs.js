@@ -1,6 +1,7 @@
-var currentLine = $("input[name=changeLine]:checked").attr('url');
+var lineNum = 0
 $("input[name=changeLine]").change(function(event) {
-	currentLine = $(this).attr('url');
+	lineNum = parseInt($(this).attr('url'));
+	console.log(lineNum - 1)
 	if (!$(".list>li>a").length) {
 		return;
 	}
@@ -8,7 +9,7 @@ $("input[name=changeLine]").change(function(event) {
 
 	$(".list>li>a").each(function(index, el) {
 		var url = $(this).attr('url')
-		$(this).attr('href', currentLine + url);
+		$(this).attr('href', apiUrl + (lineNum - 1) + '/' + url);
 	});
 	alert("线路切换完成！播放视频试试吧！")
 });
@@ -39,8 +40,8 @@ function startSearch() {
 						$(".video-list").append('<ul class="list type_' + i + '_list_' + j + '">')
 						for (var k = 0; k < videoData[i].list[j].length; k++) {
 							var vi = videoData[i].list[j]
-							var viUrl = re.test(vi[k].url) ? vi[k].url : ('http://' + vi[k].url.replace(/\/\//, ''))
-							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + currentLine + viUrl + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
+							var viUrl = vi[k].url
+							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + lineNum + '/' + viUrl + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
 						}
 						$(".video-list").append('</ul>')
 					}
