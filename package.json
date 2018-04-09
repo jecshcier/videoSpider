@@ -14,7 +14,9 @@
     "fs-extra": "^5.0.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
-    "request": "^2.85.0"
+    "request": "^2.85.0",
+    "superagent": "^3.8.2",
+    "superagent-proxy": "^1.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^8.2.0",
