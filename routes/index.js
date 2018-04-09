@@ -6,7 +6,7 @@ const cheerio = require('cheerio')
 const request = require('superagent'); // 引入SuperAgent
 require('superagent-proxy')(request);
 
-// const gulpfile = require('../gulpfile')
+const gulpfile = require('../gulpfile')
 
 const callbackModel = () => {
 	return {
@@ -23,7 +23,8 @@ router.get('/', function(req, res, next) {
 	res.render('index', {
 		title: '视频资源站',
 		staticUrl: '/video_spider/vs',
-		apiUrl: '/video_player/'
+		apiUrl: '/video_player',
+		verifyKey: global.verifyKey
 	});
 });
 

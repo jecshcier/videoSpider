@@ -1,7 +1,6 @@
 var lineNum = 0
 $("input[name=changeLine]").change(function(event) {
 	lineNum = parseInt($(this).attr('url'));
-	console.log(lineNum - 1)
 	if (!$(".list>li>a").length) {
 		return;
 	}
@@ -9,7 +8,7 @@ $("input[name=changeLine]").change(function(event) {
 
 	$(".list>li>a").each(function(index, el) {
 		var url = $(this).attr('url')
-		$(this).attr('href', apiUrl + (lineNum - 1) + '/' + url);
+		$(this).attr('href', apiUrl + '?line=' + (lineNum - 1) + '&key=' + url + '&v=' + verifyKey);
 	});
 	alert("线路切换完成！播放视频试试吧！")
 });
@@ -41,7 +40,7 @@ function startSearch() {
 						for (var k = 0; k < videoData[i].list[j].length; k++) {
 							var vi = videoData[i].list[j]
 							var viUrl = vi[k].url
-							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + '?line=' + lineNum + '&key=' + viUrl + '&v=' + vi[k].verifyKey + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
+							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + '?line=' + lineNum + '&key=' + viUrl + '&v=' + verifyKey + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
 						}
 						$(".video-list").append('</ul>')
 					}
