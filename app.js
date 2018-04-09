@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var videoRouter = require('./routes/player');
+
 
 var app = express();
 
@@ -20,6 +22,8 @@ app.use(cookieParser());
 app.use('/video_spider/vs', express.static('dist'));
 
 app.use('/video_spider', indexRouter);
+app.use('/video_player', videoRouter);
+
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

@@ -16,12 +16,14 @@ const callbackModel = () => {
 	}
 }
 
+global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+
 /* GET home page. */
-router.get('/index', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	res.render('index', {
 		title: '视频资源站',
 		staticUrl: '/video_spider/vs',
-		apiUrl: '/video_spider/video_player/'
+		apiUrl: '/video_player/'
 	});
 });
 
@@ -46,6 +48,7 @@ router.post('/searchVideo', function(req, res, next) {
 					console.log(body)
 					const $ = cheerio.load(body)
 					let videoList = []
+					let re = /http/
 					$(".s_dir").each(function(index, el) {
 						console.log('==================>')
 						console.log(index)
@@ -62,9 +65,11 @@ router.post('/searchVideo', function(req, res, next) {
 						$(el).find(".s_items").each(function(index, el) {
 							videoData.list[index] = []
 							$(el).find('ul li a').each(function(index2, el2) {
+								let vu = $(el2).attr('href')
 								videoData.list[index].push({
 									num: $(el2).find('span').html(),
-									url: new Buffer($(el2).attr('href')).toString('base64')
+									url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
+									verifyKey: verifyKey
 								})
 							});
 						});
@@ -79,26 +84,10 @@ router.post('/searchVideo', function(req, res, next) {
 	}
 });
 
-/* GET home page. */
-router.get('/video_player/:line/:url', function(req, res, next) {
-	let lineNum = req.params.line
-	let videoUrl = req.params.url
-	let line = ["http://api.baiyug.cn/vip/index.php?url=",
-		"http://jx.vgoodapi.com/jx.php?url=",
-		"http://000o.cc/jx/ty.php?url=",
-		"http://www.dgua.xyz/webcloud/?url=",
-		"http://player.jidiaose.com/supapi/iframe.php?v=",
-		"http://jx.ejiafarm.com/x/jiexi.php?url=",
-		"http://api.wlzhan.com/sudu/?url="
-	]
-	console.log(videoUrl)
+setInterval(() => {
+	global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+}, 1000 * 60 * 60 * 24)
 
-	res.render('video_player', {
-		title: '--视频播放--',
-		staticUrl: '/video_spider/vs',
-		videoUrl: line[lineNum] + new Buffer(videoUrl, 'base64').toString()
-	});
-});
 
 
 module.exports = router;

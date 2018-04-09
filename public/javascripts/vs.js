@@ -41,7 +41,7 @@ function startSearch() {
 						for (var k = 0; k < videoData[i].list[j].length; k++) {
 							var vi = videoData[i].list[j]
 							var viUrl = vi[k].url
-							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + lineNum + '/' + viUrl + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
+							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + '?line=' + lineNum + '&key=' + viUrl + '&v=' + vi[k].verifyKey + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
 						}
 						$(".video-list").append('</ul>')
 					}
