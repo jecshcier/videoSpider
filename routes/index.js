@@ -70,17 +70,33 @@ cn_ip([]).then((info) => {
 								list: [],
 								thumb: $(el).find(".s_target>img").length ? $(el).find(".s_target>img").attr('src') : null
 							}
-							$(el).find(".s_items").each(function(index, el) {
-								videoData.list[index] = []
-								$(el).find('ul li a').each(function(index2, el2) {
-									let vu = $(el2).attr('href')
-									videoData.list[index].push({
-										num: $(el2).find('span').html(),
-										url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
-										verifyKey: verifyKey
-									})
+							let items = $(el).find(".s_items")
+							let movies = $(el).find(".s_act")
+							if (items.length) {
+								items.each(function(index, el) {
+									videoData.list[index] = []
+									$(el).find('ul li a').each(function(index2, el2) {
+										let vu = $(el2).attr('href')
+										videoData.list[index].push({
+											num: $(el2).find('span').html(),
+											url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
+											verifyKey: verifyKey
+										})
+									});
 								});
-							});
+							} else if (movies.length) {
+								movies.each(function(index, el) {
+									videoData.list[index] = []
+									$(el).find('.btn_play').each(function(index2, el2) {
+										let vu = $(el2).attr('href')
+										videoData.list[index].push({
+											num: $(el2).attr('_log_title'),
+											url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
+											verifyKey: verifyKey
+										})
+									});
+								});
+							}
 							videoList.push(videoData)
 						});
 						info.flag = true
