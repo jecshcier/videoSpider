@@ -13,22 +13,26 @@ const callbackModel = () => {
 const cn_ip = (ipList) => {
 	let info = callbackModel()
 	return new Promise((resolve, reject) => {
-		if (ipList.length >= 20) {
-			info.message = "ip资源充足，不需要爬取"
-			reject(info)
-			return;
-		}
-		catchIP(ipList, 1, (ok, data) => {
-			if (ok) {
-				console.log("ip爬取完成 -> 共计" + data.length + '个IP')
-				info.flag = true
-				info.message = "ip爬取完成 -> 共计" + data.length + '个IP'
-				info.data = data
-				resolve(info)
-			} else {
-				info.message = data
+		verifyIP(ipList).then(() => {
+			if (ipList.length >= 20) {
+				info.message = "当前ip数量" + ipList.length + "----->ip资源充足，不需要爬取"
 				reject(info)
+				return;
 			}
+			catchIP(ipList, 1, (ok, data) => {
+				if (ok) {
+					console.log("ip爬取完成 -> 共计" + data.length + '个IP')
+					info.flag = true
+					info.message = "ip爬取完成 -> 共计" + data.length + '个IP'
+					info.data = data
+					resolve(info)
+				} else {
+					info.message = data
+					reject(info)
+				}
+			})
+		}).catch((e) => {
+			console.log(e)
 		})
 	})
 }
@@ -64,36 +68,54 @@ function catchIP(ipList, page, callback) {
 			// 获取可用ip
 			console.log(currentIPList)
 				// 过滤ip
-			for (let i = 0; i < currentIPList.length; i++) {
-				request // 发起请求
-					.get('http://ip.chinaz.com/getip.aspx')
-					.proxy(currentIPList[i])
-					.timeout({
-						response: 3000, // Wait 5 seconds for the server to start sending,
-						deadline: 60000, // but allow 1 minute for the file to finish loading.
-					})
-					.end((err, respons) => {
-						if (err || !respons) {
-							console.log("----------------------------------->")
-							console.log(currentIPList[i] + "的测试结果：")
-							console.log("------------无效-------------->")
-							console.log(err)
-							console.log(respons)
-						}
-						console.log("----------------------------------->")
-						console.log(currentIPList[i] + "的测试结果：")
-						console.log("------------通过-------------->")
-						ipList.push(currentIPList[i])
-					})
-			}
 
-			setTimeout(() => {
-				// ip不足时，继续爬取
+			verifyIP(currentIPList).then((vedIPList) => {
 				page++;
+				ipList = ipList.concat(vedIPList)
 				ipList = Array.from(new Set(ipList));
-				(page > 5) ? callback(true, ipList): ((ipList.length < 20) ? catchIP(ipList, page, callback) : (callback(true, ipList) && console.log("okokokokokook")))
-			}, 5000)
+				(page > 5) ? callback(true, ipList): ((ipList.length < 20) ? catchIP(ipList, page, callback) : (callback(true, ipList)))
+			}).catch((e) => {
+				console.log(e)
+			})
+
+			// setTimeout(() => {
+			// 	// ip不足时，继续爬取
+			// }, 5000)
 		})
+}
+
+
+// 验证IP
+function verifyIP(ipList) {
+	let vedIP = []
+	for (let i = 0; i < ipList.length; i++) {
+		request // 发起请求
+			.get('http://ip.chinaz.com/getip.aspx')
+			.proxy(ipList[i])
+			.timeout({
+				response: 3000, // Wait 5 seconds for the server to start sending,
+				deadline: 60000, // but allow 1 minute for the file to finish loading.
+			})
+			.end((err, respons) => {
+				if (err || !respons) {
+					console.log("----------------------------------->")
+					console.log(ipList[i] + "的测试结果：")
+					console.log("------------无效-------------->")
+					console.log(err)
+					console.log(respons)
+				}
+				console.log("----------------------------------->")
+				console.log(ipList[i] + "的测试结果：")
+				console.log("------------通过-------------->")
+				vedIP.push(ipList[i])
+			})
+	}
+
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve(vedIP)
+		}, 5000)
+	})
 }
 
 
