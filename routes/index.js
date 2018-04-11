@@ -53,7 +53,6 @@ cn_ip([]).then((info) => {
 						res.send(info)
 					} else {
 						let body = respons.text;
-						console.log(body)
 						const $ = cheerio.load(body)
 						let videoList = []
 						let re = /http/
