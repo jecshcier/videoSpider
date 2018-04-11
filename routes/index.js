@@ -60,7 +60,6 @@ cn_ip([]).then((info) => {
 							console.log('==================>')
 							console.log(index)
 							console.log('==================>')
-							console.log($(el).html())
 							if (!$(el).find(".base_name").length) {
 								return true;
 							}
