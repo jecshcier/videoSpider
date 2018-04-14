@@ -45,10 +45,14 @@ cn_ip([]).then((info) => {
 			request // 发起请求
 				.get('http://www.soku.com/search_video/q_' + encodeURI(videoName))
 				.proxy(ipList[0] ? ipList[0] : null)
+				.timeout({
+					response: 5000, // Wait 5 seconds for the server to start sending,
+					deadline: 60000, // but allow 1 minute for the file to finish loading.
+				}).
 				.end((err, respons) => {
 					if (err) {
 						info.message = '服务器连接出错' + err
-						console.log("错误")
+						console.log("搜索引擎响应错误---------");
 						ipList.splice(0, 1)
 						res.send(info)
 					} else {
