@@ -48,7 +48,7 @@ cn_ip([]).then((info) => {
 				.timeout({
 					response: 5000, // Wait 5 seconds for the server to start sending,
 					deadline: 60000, // but allow 1 minute for the file to finish loading.
-				}).
+				})
 				.end((err, respons) => {
 					if (err) {
 						info.message = '服务器连接出错' + err
