@@ -13,7 +13,8 @@ const callbackModel = () => {
 const cn_ip = (ipList) => {
 	let info = callbackModel()
 	return new Promise((resolve, reject) => {
-		verifyIP(ipList).then(() => {
+		verifyIP(ipList).then((vedIP) => {
+			ipList = vedIP
 			if (ipList.length >= 20) {
 				info.message = "当前ip数量" + ipList.length + "----->ip资源充足，不需要爬取"
 				reject(info)
@@ -40,6 +41,10 @@ const cn_ip = (ipList) => {
 function catchIP(ipList, page, callback) {
 	request // 发起请求
 		.get('http://free-proxy.cz/zh/proxylist/country/CN/all/uptime/all/' + page)
+		.timeout({
+			response: 10000, // Wait 5 seconds for the server to start sending,
+			deadline: 60000, // but allow 1 minute for the file to finish loading.
+		})
 		.end((err, respons) => {
 			if (err || !respons) {
 				console.log(err)

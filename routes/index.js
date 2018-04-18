@@ -61,9 +61,9 @@ cn_ip([]).then((info) => {
 						let videoList = []
 						let re = /http/
 						$(".s_dir").each(function(index, el) {
-							console.log('==================>')
-							console.log(index)
-							console.log('==================>')
+							// console.log('==================>')
+							// console.log(index)
+							// console.log('==================>')
 							if (!$(el).find(".base_name").length) {
 								return true;
 							}
@@ -109,7 +109,7 @@ cn_ip([]).then((info) => {
 				});
 		}
 	});
-	// 三小时更新一次ip池
+	// 5分钟更新一次ip池
 	setInterval(() => {
 		cn_ip(ipList).then((info) => {
 			ipList = info.data
@@ -118,7 +118,7 @@ cn_ip([]).then((info) => {
 			console.log(info.message)
 			console.log("==========================>")
 		})
-	}, 1000 * 60 * 60 * 3)
+	}, 1000 * 10)
 
 }).catch((info) => {
 	console.log("==========================>")
