@@ -41,12 +41,12 @@ cn_ip([]).then((info) => {
 		console.log(req.body)
 		let key = uuid.v1()
 		videoList[key] = req.body.data
-		// 24小时自动清理分享的链接
-		setTimeout(()=>{
+			// 24小时自动清理分享的链接
+		setTimeout(() => {
 			delete videoList[key]
-		},1000 * 60 * 60 * 24)
+		}, 1000 * 60 * 60 * 24)
 		res.send({
-			url:domainUrl + '/video_player/video?key=' + key
+			url: domainUrl + '/video_player/video?key=' + key
 		})
 	});
 
@@ -117,6 +117,13 @@ cn_ip([]).then((info) => {
 							}
 							videoList.push(videoData)
 						});
+						if (!videoList.length) {
+							info.message = '服务器连接出错' + err
+							console.log("搜索引擎响应错误---------");
+							ipList.splice(0, 1)
+							res.send(info)
+							return;
+						}
 						info.flag = true
 						info.message = "获取成功"
 						info.data = videoList
