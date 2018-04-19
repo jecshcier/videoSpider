@@ -16,7 +16,8 @@
     "morgan": "~1.9.0",
     "request": "^2.85.0",
     "superagent": "^3.8.2",
-    "superagent-proxy": "^1.0.3"
+    "superagent-proxy": "^1.0.3",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^8.2.0",

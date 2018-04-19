@@ -29,5 +29,21 @@ router.get('/', function(req, res, next) {
 	});
 });
 
+router.get('/video', function(req, res, next) {
+	let key = req.query.key
+	console.log(key)
+	if (global.videoList[key]) {
+		let data = JSON.parse(global.videoList[key])
+		res.render('video_share', {
+			title: data.name,
+			staticUrl: '/video_spider/vs',
+			data: data.data
+		});
+	} else {
+		res.send("error")
+	}
+
+});
+
 
 module.exports = router

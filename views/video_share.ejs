@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= title %>在线观看地址</title>
+</head>
+<body>
+	<%for(var i=0;i<data.length;i++){%>
+		<p>第<%=data[i].num%>集</p>
+		<a href="<%=data[i].url%>"><%=data[i].url%></a>
+		<%}%>
+</body>
+</html>

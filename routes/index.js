@@ -7,8 +7,10 @@ const request = require('superagent'); // 引入SuperAgent
 require('superagent-proxy')(request);
 
 const cn_ip = require('./catchIP')
+const uuid = require('uuid')
 
 // const gulpfile = require('../gulpfile')
+const domainUrl = "http://cshayne.cn"
 
 
 const callbackModel = () => {
@@ -20,6 +22,7 @@ const callbackModel = () => {
 }
 
 global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+global.videoList = {}
 
 
 cn_ip([]).then((info) => {
@@ -32,6 +35,19 @@ cn_ip([]).then((info) => {
 			apiUrl: '/video_player',
 			verifyKey: global.verifyKey
 		});
+	});
+
+	router.post('/gen_video', function(req, res, next) {
+		console.log(req.body)
+		let key = uuid.v1()
+		videoList[key] = req.body.data
+		// 24小时自动清理分享的链接
+		setTimeout(()=>{
+			delete videoList[key]
+		},1000 * 60 * 60 * 24)
+		res.send({
+			url:domainUrl + '/video_player/video?key=' + key
+		})
 	});
 
 	router.post('/searchVideo', function(req, res, next) {
@@ -47,7 +63,7 @@ cn_ip([]).then((info) => {
 				.proxy(ipList[0] ? ipList[0] : null)
 				.timeout({
 					response: 5000, // Wait 5 seconds for the server to start sending,
-					deadline: 60000, // but allow 1 minute for the file to finish loading.
+					deadline: 10000, // but allow 1 minute for the file to finish loading.
 				})
 				.end((err, respons) => {
 					if (err) {
@@ -109,7 +125,7 @@ cn_ip([]).then((info) => {
 				});
 		}
 	});
-	// 5分钟更新一次ip池
+	// 15分钟更新一次ip池
 	setInterval(() => {
 		cn_ip(ipList).then((info) => {
 			ipList = info.data
@@ -118,7 +134,7 @@ cn_ip([]).then((info) => {
 			console.log(info.message)
 			console.log("==========================>")
 		})
-	}, 1000 * 10)
+	}, 1000 * 60 * 15)
 
 }).catch((info) => {
 	console.log("==========================>")

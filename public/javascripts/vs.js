@@ -13,6 +13,41 @@ $("input[name=changeLine]").change(function(event) {
 	alert("线路切换完成！播放视频试试吧！")
 });
 
+
+function share(_this) {
+	var videoClass = $(_this).attr('rel');
+	var videoName = $(_this).attr('videoName');
+	var videoData = {
+		name: videoName,
+		data: []
+	}
+	console.log(videoClass)
+	$("." + videoClass + ">li").each(function(index, el) {
+		videoData.data.push({
+			num: $(el).find('a').html(),
+			url: $(el).find('a').attr('href')
+		})
+	});
+	$.ajax({
+			url: '/video_spider/gen_video',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				data: JSON.stringify(videoData)
+			},
+		})
+		.done(function(data) {
+			$("." + videoClass).after('<p>分享成功！分享链接为:' + data.url + '</p>')
+		})
+		.fail(function() {
+			alert("服务器连接失败!")
+		})
+		.always(function() {
+			console.log("complete");
+		});
+
+}
+
 function startSearch() {
 	if (!$("#videoName").val().replace(/ /g, '').length) {
 		alert("请输入视频名称！")
@@ -43,6 +78,7 @@ function startSearch() {
 							$(".type_" + i + "_list_" + j).append('<li><a target="_blank" href="' + apiUrl + '?line=' + lineNum + '&key=' + viUrl + '&v=' + verifyKey + '" url="' + viUrl + '">' + vi[k].num + '</a></li>')
 						}
 						$(".video-list").append('</ul>')
+						$(".video-list").append('<button rel="type_' + i + '_list_' + j + '" class="share" onclick="share(this)" videoName="' + videoData[i].name + '">一键分享</button>')
 					}
 				}
 			} else {
