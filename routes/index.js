@@ -71,12 +71,12 @@ redis.getData('ipList').then((result) => {
 				.get('http://www.soku.com/search_video/q_' + encodeURI(videoName))
 				.proxy(ipList[0] ? ipList[0] : null)
 				.timeout({
-					response: 10000, // Wait 5 seconds for the server to start sending,
+					response: 5000, // Wait 5 seconds for the server to start sending,
 					deadline: 20000, // but allow 1 minute for the file to finish loading.
 				})
 				.end((err, respons) => {
 					if (err) {
-						info.message = '服务器连接出错' + err
+						info.message = '服务器连接出错' + err + "\n请重试一下哦～"
 						console.log("搜索引擎响应错误---------，\n请重试一下哦～");
 						ipList.splice(0, 1)
 						res.send(info)
@@ -128,7 +128,7 @@ redis.getData('ipList').then((result) => {
 						});
 						if (!videoList.length) {
 							if ($(".sk_null").length) {
-								info.message = '服务器连接出错'
+								info.message = '服务器连接出错---被屏蔽，\n请重试一下哦～'
 								console.log("搜索引擎响应错误---------被屏蔽，\n请重试一下哦～");
 								ipList.splice(0, 1)
 								res.send(info)
