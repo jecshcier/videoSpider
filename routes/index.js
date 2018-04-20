@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 // const request = require('request')
 const cheerio = require('cheerio')
-
 const request = require('superagent'); // 引入SuperAgent
 require('superagent-proxy')(request);
 
 const cn_ip = require('./catchIP')
+const redis = require('./redis')
 const uuid = require('uuid')
 
-// const gulpfile = require('../gulpfile')
+const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
 
 
@@ -22,11 +22,23 @@ const callbackModel = () => {
 }
 
 global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
-global.videoList = {}
 
-
-cn_ip([]).then((info) => {
+redis.getData('ipList').then((result) => {
+	let ipArr
+	if (!result) {
+		ipArr = []
+	} else {
+		ipArr = result
+		ipArr = JSON.parse(ipArr)
+	}
+	return cn_ip(ipArr)
+}).then((info) => {
 	let ipList = info.data
+	console.log("==========================>")
+	console.log(info.message)
+	console.log("==========================>")
+	generateKey()
+	redis.setData('ipList', JSON.stringify(ipList))
 		/* GET home page. */
 	router.get('/', function(req, res, next) {
 		res.render('index', {
@@ -38,13 +50,9 @@ cn_ip([]).then((info) => {
 	});
 
 	router.post('/gen_video', function(req, res, next) {
-		console.log(req.body)
 		let key = uuid.v1()
-		videoList[key] = req.body.data
-			// 24小时自动清理分享的链接
-		setTimeout(() => {
-			delete videoList[key]
-		}, 1000 * 60 * 60 * 24)
+		let exTime = 24 * 60 * 60
+		redis.setData(key, req.body.data, exTime)
 		res.send({
 			url: domainUrl + '/video_player/video?key=' + key
 		})
@@ -62,13 +70,13 @@ cn_ip([]).then((info) => {
 				.get('http://www.soku.com/search_video/q_' + encodeURI(videoName))
 				.proxy(ipList[0] ? ipList[0] : null)
 				.timeout({
-					response: 5000, // Wait 5 seconds for the server to start sending,
-					deadline: 10000, // but allow 1 minute for the file to finish loading.
+					response: 10000, // Wait 5 seconds for the server to start sending,
+					deadline: 20000, // but allow 1 minute for the file to finish loading.
 				})
 				.end((err, respons) => {
 					if (err) {
 						info.message = '服务器连接出错' + err
-						console.log("搜索引擎响应错误---------");
+						console.log("搜索引擎响应错误---------，\n请重试一下哦～");
 						ipList.splice(0, 1)
 						res.send(info)
 					} else {
@@ -118,12 +126,20 @@ cn_ip([]).then((info) => {
 							videoList.push(videoData)
 						});
 						if (!videoList.length) {
-							info.message = '服务器连接出错' + err
-							console.log("搜索引擎响应错误---------");
-							ipList.splice(0, 1)
+							if ($(".sk_null").length) {
+								info.message = '服务器连接出错'
+								console.log("搜索引擎响应错误---------被屏蔽，\n请重试一下哦～");
+								ipList.splice(0, 1)
+								res.send(info)
+								return
+							}
+							info.flag = true
+							info.message = "获取成功"
+							info.data = videoList
 							res.send(info)
-							return;
+							return
 						}
+						console.log(videoList)
 						info.flag = true
 						info.message = "获取成功"
 						info.data = videoList
@@ -136,6 +152,7 @@ cn_ip([]).then((info) => {
 	setInterval(() => {
 		cn_ip(ipList).then((info) => {
 			ipList = info.data
+			redis.setData('ipList', JSON.stringify(ipList))
 		}).catch((info) => {
 			console.log("==========================>")
 			console.log(info.message)
@@ -145,16 +162,21 @@ cn_ip([]).then((info) => {
 
 }).catch((info) => {
 	console.log("==========================>")
-	console.log(info.message)
+	console.log(info)
 	console.log("==========================>")
 })
 
-
 // 24小时更新一次key
 setInterval(() => {
-	global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+	generateKey()
 }, 1000 * 60 * 60 * 24)
 
+function generateKey() {
+	global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+	let time = 24 * 60 * 60 * 3
+	redis.setData(global.verifyKey, global.verifyKey, time)
+	console.log("秘钥生成完成..")
+}
 
 
 module.exports = router;

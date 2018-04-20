@@ -5,8 +5,9 @@
 	<title><%= title %>在线观看地址</title>
 </head>
 <body>
+	<h1><%= title %></h1>
 	<%for(var i=0;i<data.length;i++){%>
-		<p>第<%=data[i].num%>集</p>
+		<p>节目名称：<%=data[i].num%></p>
 		<a href="<%=data[i].url%>"><%=data[i].url%></a>
 		<%}%>
 </body>

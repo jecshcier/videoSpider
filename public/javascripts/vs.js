@@ -48,9 +48,14 @@ function share(_this) {
 
 }
 
-function startSearch() {
+function startSearch(_this) {
+	$(_this).addClass('searching')
+	$(_this).html('搜索中')
+
 	if (!$("#videoName").val().replace(/ /g, '').length) {
 		alert("请输入视频名称！")
+		$(_this).removeClass('searching')
+		$(_this).html('搜索')
 		return;
 	}
 	$.ajax({
@@ -63,10 +68,16 @@ function startSearch() {
 		})
 		.done(function(result) {
 			console.log(result)
+			$(_this).removeClass('searching')
+			$(_this).html('搜索')
 			if (result.flag) {
 				var videoData = result.data
 				var re = /http/
 				$(".video-list").empty()
+				if (!result.data.length) {
+					$(".video-list").append('<p style="font-size:18px;color:red;">暂无此视频，我们后续会更新收录哦！</p>');
+					return;
+				}
 				for (var i = 0; i < videoData.length; i++) {
 					$(".video-list").append('<h2>' + videoData[i].name + '</h2><img width="200" height="300" src="' + videoData[i].thumb + '">')
 					for (var j = 0; j < videoData[i].list.length; j++) {
@@ -86,6 +97,8 @@ function startSearch() {
 			}
 		})
 		.fail(function() {
+			$(_this).removeClass('searching')
+			$(_this).html('搜索')
 			alert("服务器连接失败")
 		})
 		.always(function() {

@@ -20,3 +20,25 @@
 	display: block;
 	padding: 5px;
 }
+.searching{
+	animation-name:searching;
+	animation-duration:3s;
+	animation-timing-function: linear;
+	animation-delay:  0;
+	animation-iteration-count: infinite;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background: #b87cff;
+    border: none;
+    color: #fff;
+    pointer-events: none;
+    outline: none;
+    margin-left: 20px;
+}
+
+@-webkit-keyframes searching
+{
+	from {transform:rotateY(0);}
+	to {transform:rotateY(720deg);}
+}
