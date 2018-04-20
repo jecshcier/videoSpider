@@ -33,6 +33,7 @@ function share(_this) {
 			type: 'POST',
 			dataType: 'json',
 			data: {
+				videoName:videoName,
 				data: JSON.stringify(videoData)
 			},
 		})

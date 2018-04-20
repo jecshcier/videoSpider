@@ -9,7 +9,7 @@ const cn_ip = require('./catchIP')
 const redis = require('./redis')
 const uuid = require('uuid')
 
-// const gulpfile = require('../gulpfile')
+const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
 
 
@@ -50,8 +50,9 @@ redis.getData('ipList').then((result) => {
 	});
 
 	router.post('/gen_video', function(req, res, next) {
-		let key = uuid.v1()
 		let exTime = 24 * 60 * 60
+		console.log(req.body.videoName)
+		let key = new Buffer(req.body.videoName).toString('base64')
 		redis.setData(key, req.body.data, exTime)
 		res.send({
 			url: domainUrl + '/video_player/video?key=' + key
