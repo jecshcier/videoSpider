@@ -8,6 +8,7 @@ require('superagent-proxy')(request);
 const cn_ip = require('./catchIP')
 const redis = require('./redis')
 const uuid = require('uuid')
+const crypto = require('crypto')
 
 // const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
@@ -21,7 +22,7 @@ const callbackModel = () => {
 	}
 }
 
-global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+global.verifyKey = uuid.v4()
 
 redis.getData('ipList').then((result) => {
 	let ipArr
@@ -52,7 +53,7 @@ redis.getData('ipList').then((result) => {
 	router.post('/gen_video', function(req, res, next) {
 		let exTime = 24 * 60 * 60
 		console.log(req.body.videoName)
-		let key = new Buffer(req.body.videoName).toString('base64')
+		let key = crypto.createHash('sha1').update(req.body.videoName).digest('hex')
 		redis.setData(key, req.body.data, exTime)
 		res.send({
 			url: domainUrl + '/video_player/video?key=' + key
@@ -107,7 +108,7 @@ redis.getData('ipList').then((result) => {
 										videoData.list[index].push({
 											num: $(el2).find('span').html(),
 											url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
-											verifyKey: verifyKey
+											verifyKey: global.verifyKey
 										})
 									});
 								});
@@ -119,7 +120,7 @@ redis.getData('ipList').then((result) => {
 										videoData.list[index].push({
 											num: $(el2).attr('_log_title'),
 											url: new Buffer(re.test(vu) ? vu : ('http://' + vu.replace(/\/\//, ''))).toString('base64'),
-											verifyKey: verifyKey
+											verifyKey: global.verifyKey
 										})
 									});
 								});
@@ -173,7 +174,7 @@ setInterval(() => {
 }, 1000 * 60 * 60 * 24)
 
 function generateKey() {
-	global.verifyKey = new Buffer(Math.random() * 99999999 + '').toString('base64')
+	global.verifyKey = uuid.v4()
 	let time = 24 * 60 * 60 * 3
 	redis.setData(global.verifyKey, global.verifyKey, time)
 	console.log("秘钥生成完成..")
