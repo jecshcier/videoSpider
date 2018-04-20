@@ -9,7 +9,7 @@ const cn_ip = require('./catchIP')
 const redis = require('./redis')
 const uuid = require('uuid')
 
-const gulpfile = require('../gulpfile')
+// const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
 
 
