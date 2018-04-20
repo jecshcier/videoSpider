@@ -148,8 +148,12 @@ function verifyIP(ipList) {
 		let vedIP = []
 		let ipNum = 0
 		let count = 0
+		console.log(ipList)
 		let verInt = setInterval(() => {
 			let currentN = ipNum
+			if(!ipList.length){
+				resolve(vedIP)
+			}
 			if (ipNum === ipList.length) {
 				clearInterval(verInt)
 				return;
