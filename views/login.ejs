@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='<%= staticUrl %>/stylesheets/style.css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <h4>请输入登录密码</h4>
+    <input type="text" class="key">
+    <button onclick="login(this)">登录</button>
+  </body>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script src="<%= staticUrl %>/javascripts/index.js"></script>
+</html>

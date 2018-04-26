@@ -2,6 +2,14 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+const session = require('express-session')({
+	// genid: function(req) {
+	//   return genuuid() // use UUIDs for session IDs
+	// },
+	secret: 'video_spider',
+	resave: true,
+	saveUninitialized: true
+})
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -19,6 +27,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session)
+
 app.use('/video_spider/vs', express.static('dist'));
 
 app.use('/video_spider', indexRouter);

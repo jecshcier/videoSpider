@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// const request = require('request')
 const cheerio = require('cheerio')
 const request = require('superagent'); // 引入SuperAgent
 require('superagent-proxy')(request);
@@ -12,6 +11,7 @@ const crypto = require('crypto')
 
 // const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
+const ENTER_KEY = ['19940815','zlywanan0115','a123456']
 
 
 const callbackModel = () => {
@@ -21,6 +21,41 @@ const callbackModel = () => {
 		data: null
 	}
 }
+
+router.use((req, res, next) => {
+	// 中间件 - 指定的路由都将经过这里
+	// 做访问拦截 - token验证等
+	if ((req.url.indexOf('/login') !== -1) || req.session.user) {
+		next()
+		return
+	}
+	res.render('login', {
+		title: '视频资源分享站',
+		staticUrl: '/video_spider/vs',
+		apiUrl: '/video_player'
+	})
+})
+
+
+router.post('/login', function(req, res, next) {
+	let info = callbackModel()
+	let login_key = req.body.key
+	console.log(req.body)
+	console.log(login_key.indexOf(ENTER_KEY))
+	if (login_key.indexOf(ENTER_KEY) !== -1) {
+		req.session.user = {
+			name: 'admin'
+		}
+		info.flag = true
+		info.message = "登录成功"
+		res.send(info)
+		return false;
+	}
+	info.message = "密码错误!"
+	res.send(info)
+});
+
+
 
 global.verifyKey = uuid.v4()
 
