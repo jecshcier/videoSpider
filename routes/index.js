@@ -42,7 +42,7 @@ router.post('/login', function(req, res, next) {
 	let login_key = req.body.key
 	console.log(req.body)
 	console.log(login_key.indexOf(ENTER_KEY))
-	if (login_key.indexOf(ENTER_KEY) !== -1) {
+	if (ENTER_KEY.indexOf(login_key) !== -1) {
 		req.session.user = {
 			name: 'admin'
 		}
