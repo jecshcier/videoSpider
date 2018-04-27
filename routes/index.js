@@ -11,7 +11,7 @@ const crypto = require('crypto')
 
 // const gulpfile = require('../gulpfile')
 const domainUrl = "http://cshayne.cn"
-const ENTER_KEY = ['19940815','zlywanan0115','a123456']
+const ENTER_KEY = ['19940815','zlywanan0115','a123456','cccccc']
 
 
 const callbackModel = () => {
